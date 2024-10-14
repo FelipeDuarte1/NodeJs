@@ -39,8 +39,7 @@ app.get('/hey', (req, res) => {
 
 //GET http://localhost:3000/filmes
 app.get("/filmes", async  (req, res) => {
-    const filmes = await 
-    Filme.find()
+    const filmes = await Filme.find()
     res.json(filmes)
 })
 
@@ -53,8 +52,19 @@ app.post("/filmes", async (req, res) => {
     const filme = new Filme({titulo: titulo, sinopse: sinopse}) 
     //adiciona o novo filme à base
     await filme.save()
-    const filmes = await 
-    Filme.find()
+    const filmes = await Filme.find()
     //responde ao cliente. Aqui, optamos por devolver a base inteira ao cliente, embora não seja obrigatório.
     res.json(filmes)
+})
+
+app.post('/signup', async (req, res) => {
+    const login = req.body.login
+    const password = req.body.password
+    const usuario = new Usuario({
+        login : login,
+        password: password
+    })
+    const respMongo = await usuario.save()
+    console.log(respMongo)
+    res.end()
 })
