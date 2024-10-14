@@ -9,6 +9,8 @@ app.use(cors())
 //GET http://localhost:3000/hey 
 
 
+
+
 const Filme = mongoose.model ("Filme", mongoose.Schema({
     titulo: {type: String}, 
     sinopse: {type: String}
@@ -58,13 +60,38 @@ app.post("/filmes", async (req, res) => {
 })
 
 app.post('/signup', async (req, res) => {
+    try{
     const login = req.body.login
     const password = req.body.password
-    const usuario = new Usuario({
-        login : login,
-        password: password
+    const criptografada = await bcrypt.hash(password, 10)
+    const usuario = new Usuario({ 
+        login: login, 
+        password: criptografada
     })
     const respMongo = await usuario.save()
     console.log(respMongo)
-    res.end()
+    res.status(201).end()}
+    catch(error){
+        console.log(error) 
+        res.status(409).end()
+    }
 })
+
+app.post('/login', async (req, res) => { 
+    //login/senha que o usuário enviou 
+    const login = req.body.login 
+    const password = req.body.password
+    //tentamos encontrar no MongoDB
+    const u = await Usuario.findOne({login: req.body.login}) 
+    if(!u){
+        //senão foi encontrado, encerra por aqui com código 401
+        return res.status(401).json({mensagem: "login inválido"})}
+        //se foi encontrado, comparamos a senha, após descriptográ-la
+    const senhaValida = await bcrypt.compare(password, u.password) 
+    if (!senhaValida){
+        return res.status(401).json({mensagem: "senha inválida"})
+            //deixa assim por enquanto, já já arrumamos 
+        res.end()
+}})
+
+
