@@ -23,9 +23,7 @@ const usuarioSchema = mongoose.Schema({
     usuarioSchema.plugin(uniqueValidator) 
     const Usuario = mongoose.model("Usuario", usuarioSchema)
         
-async function conectarAoMongoDB() {
-    await mongoose.connect(`mongodb+srv://felipeduarteabc:WXoAiBrlPayO9Qw3@cluster0.vpmed.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`) } 
-        
+  
     
 app.listen(3000, () => {
     try{
